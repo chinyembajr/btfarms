@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Products | Buya-Ntanshi Farms</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="../supabase.js/supabase.js" defer></script>
+    <script src="../js/catalog.js" defer></script>
+    <script src="../js/products.js" defer></script>
+</head>
+<body class="product-page">
+    <header>
+        <a href="index.html" class="logo">
+            <span class="avatar"><img src="../Images/Green growth logo with flowing leaves.png" alt=""></span>
+            <span class="logo-text">
+                Buya<span class="highlight">-Ntashi</span>
+                <small>Rooted in Agriculture</small>
+            </span>
+        </a>
+    </header>
+
+    <nav aria-label="Main navigation">
+        <ul class="navbar">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html" aria-current="page">Products</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="application.html">Sign Up</a></li>
+        </ul>
+    </nav>
+
+    <main class="products-main">
+        <section class="products-intro">
+            <h1>Choose Products</h1>
+            <p>Select products and quantities, then send an order request. The farm will confirm availability and any prices that need confirmation.</p>
+        </section>
+
+        <form id="product-form" method="post">
+            <section class="product-options" aria-labelledby="available-products-heading">
+            <h2 id="available-products-heading">Available products</h2>
+            <p id="catalog-status" class="catalog-status" role="status" aria-live="polite">Loading products…</p>
+            </section>
+
+            <button class="review-order-button" type="submit" disabled>Review my selection</button>
+        </form>
+
+        <section id="order-review" class="order-review" hidden aria-live="polite">
+            <h2>Your selection</h2>
+            <ul id="selected-products"></ul>
+            <p id="order-total"></p>
+            <p>This sends your order request to the farm using the existing contact form. The farm will contact you to confirm availability and pricing before purchase.</p>
+            <form id="order-confirm-form">
+                <label for="customer-first-name">First name</label>
+                <input id="customer-first-name" name="first_name" type="text" autocomplete="given-name" maxlength="100" required>
+                <label for="customer-last-name">Last name</label>
+                <input id="customer-last-name" name="last_name" type="text" autocomplete="family-name" maxlength="100" required>
+                <label for="customer-email">Email address</label>
+                <input id="customer-email" name="email" type="email" autocomplete="email" maxlength="320" required>
+                <button id="confirm-order" class="send-order-button" type="submit">Send order request</button>
+            </form>
+            <p id="order-submit-status" role="status" aria-live="polite"></p>
+        </section>
+        <p id="selection-error" class="selection-error" role="alert"></p>
+    </main>
+     <footer class="home-footer">
+    <section class="footer-container">
+        <section class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="potato.html">Potato Farming</a></li>
+                <li><a href="fish.html">Fish Farming</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </section>
+
+        <section class="footer-section">
+            <h3>Follow Us</h3>
+        
+            <ul class="social-links">
+                <li><a href="https://www.facebook.com/profile.php?id=61595685276150" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V13h2.8v8h3.4z"/></svg><span>Facebook</span></a></li>
+                <li><a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 7.7A2 2 0 1 0 5.2 3.6a2 2 0 0 0 0 4.1zM3.5 9.2h3.4V21H3.5zM9 9.2h3.2v1.6h.1a3.5 3.5 0 0 1 3.2-1.8c3.4 0 4 2.2 4 5.1V21h-3.4v-6.1c0-1.5 0-3.4-2.1-3.4s-2.4 1.6-2.4 3.3V21H9z"/></svg><span>LinkedIn</span></a></li>
+                <li><a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.6 12 3.6 12 3.6s-7.6 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.8.5 9.4.5 9.4.5s7.6 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6z"/></svg><span>YouTube</span></a></li>
+            </ul>
+        </section>
+        <section class="footer-section">
+            <ul>
+            <li><h3>Contact Us</h3></li>
+            <li><p>Location: Zambia</p></li>
+            <li><p>Tel: <a href="tel:+260955708542">+260 955 708 542</a></p></li>
+            <li><p>Email: <a href="mailto:info@buyantashi.com">info@buyantashi.com</a></p></li>
+            </ul>
+        </section>
+    </section>
+    <span class="footer-copyright" data-i18n="copyright">&copy; 2026 Buya-Ntashi Farms. All rights reserved.</span>
+</footer>
+
+    </body>
+</html>

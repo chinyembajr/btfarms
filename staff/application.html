@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buya-Ntanshi Farm - Staff Application</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .application-container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        .application-card { background: #fff; border-radius: 12px; padding: 40px; box-shadow: 0 4px 12px rgb(38 51 41 / 5%); border: 1px solid #e5eadf; margin-bottom: 20px; }
+        .application-card h2 { color: #124519; margin-top: 0; text-align: center; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; color: #263329; margin-bottom: 8px; font-size: 14px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #cbd5c9; border-radius: 6px; font-family: 'Montserrat', sans-serif; font-size: 14px; box-sizing: border-box; }
+        .form-group input[readonly] { background-color: #f7f5ec; color: #586359; }
+        .btn-submit { width: 100%; padding: 14px; background: #1b5e20; color: #fff; border: none; border-radius: 6px; font-weight: 700; font-size: 16px; cursor: pointer; transition: background 160ms ease; }
+        .btn-submit:hover { background: #124519; }
+        .btn-submit:disabled { background: #cbd5c9; cursor: not-allowed; }
+        .message { text-align: center; margin-top: 15px; font-weight: 600; font-size: 14px; }
+        .success { color: #1b5e20; }
+        .error { color: #c62828; }
+        .history-item { padding: 15px; border-bottom: 1px solid #e5eadf; display: flex; justify-content: space-between; align-items: center; }
+        .history-item:last-child { border-bottom: none; }
+        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; text-transform: capitalize; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body class="home-page" style="font-family: 'Montserrat', sans-serif;">
+    <header>
+        <a href="../index.html" class="logo">
+            <logo class="avatar img"><img src="../../Images/Green growth logo with flowing leaves.png" alt="Logo"></logo>
+            <span class="logo-text">Buya<span class="highlight">-Ntashi</span><small>Staff Portal</small></span>
+        </a>
+    </header>
+    <nav>
+        <ul class="navbar">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../application.html">Sign Up / Log In</a></li>
+        </ul>
+    </nav>
+
+    <main class="application-container">
+        <div id="loading-state" style="text-align: center; padding: 40px;">Checking your account status...</div>
+        
+        <div id="application-form-container" class="application-card" style="display: none;">
+            <h2>Submit a New Application</h2>
+            <p style="text-align: center; color: #586359; margin-bottom: 30px;">You can submit multiple applications for different roles.</p>
+            <form id="staffApplicationForm">
+                <div class="form-group">
+                    <label>Your Email Address</label>
+                    <input type="email" id="applicantEmail" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="desiredRole">Desired Role *</label>
+                    <select id="desiredRole" required>
+                        <option value="" disabled selected>Select a role...</option>
+                        <option value="manager">Manager</option>
+                        <option value="bookkeeper">Bookkeeper</option>
+                        <option value="stock_controller">Stock Controller</option>
+                        <option value="delivery_personnel">Delivery Personnel</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="applicationNotes">Why do you want to join our team? (Optional)</label>
+                    <textarea id="applicationNotes" rows="4" placeholder="Briefly describe your experience..."></textarea>
+                </div>
+                <button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
+            </form>
+            <p id="message" class="message"></p>
+        </div>
+
+        <div id="application-history-container" class="application-card" style="display: none;">
+            <h2>Your Application History</h2>
+            <div id="history-list"></div>
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 20px; color: #586359; font-size: 14px; margin-top: 40px;">
+        <p>&copy; 2026 Buya-Ntashi Farm</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://obplfiabtjibycpwebqf.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9icGxmaWFidGppYnljcHdlYnFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2ODk1NTksImV4cCI6MjEwODI2NTU1OX0.prUYnRinjTOBif54LxHjyvhv7bsIaBeiqcSTk1uXmKo'; 
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function checkAuthAndStatus() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) { window.location.href = '../application.html'; return; }
+
+            document.getElementById('applicantEmail').value = session.user.email;
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('application-form-container').style.display = 'block';
+            document.getElementById('application-history-container').style.display = 'block';
+            loadApplicationHistory(session.user.id);
+        }
+
+        async function loadApplicationHistory(userId) {
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '<p style="text-align:center; color:#586359;">Loading history...</p>';
+
+            const { data: apps, error } = await supabaseClient
+                .from('staff_applications')
+                .select('desired_role, status, updated_at')
+                .eq('user_id', userId)
+                .order('updated_at', { ascending: false });
+
+            if (error || !apps || apps.length === 0) {
+                historyList.innerHTML = '<p style="text-align:center; color:#586359;">You haven\'t submitted any applications yet.</p>';
+                return;
+            }
+
+            historyList.innerHTML = '';
+            apps.forEach(app => {
+                const date = new Date(app.updated_at).toLocaleDateString();
+                historyList.innerHTML += `
+                    <div class="history-item">
+                        <div>
+                            <strong style="text-transform: capitalize;">${app.desired_role}</strong>
+                            <div style="font-size: 12px; color: #586359;">Submitted: ${date}</div>
+                        </div>
+                        <span class="status-badge status-${app.status}">${app.status}</span>
+                    </div>`;
+            });
+        }
+
+        document.getElementById('staffApplicationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msgEl = document.getElementById('message');
+            const submitBtn = document.getElementById('submitBtn');
+            const desiredRole = document.getElementById('desiredRole').value;
+            const notes = document.getElementById('applicationNotes').value;
+
+            if (!desiredRole) {
+                msgEl.textContent = '⚠️ Please select a desired role.';
+                msgEl.className = 'message error';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            msgEl.textContent = '';
+
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            const { error } = await supabaseClient.from('staff_applications').insert({
+                user_id: session.user.id,
+                desired_role: desiredRole,
+                notes: notes,
+                status: 'pending'
+            });
+
+            if (error) {
+                msgEl.textContent = '❌ Error: ' + error.message;
+                msgEl.className = 'message error';
+            } else {
+                msgEl.textContent = '✅ Application submitted successfully!';
+                msgEl.className = 'message success';
+                document.getElementById('staffApplicationForm').reset();
+                document.getElementById('applicantEmail').value = session.user.email;
+                loadApplicationHistory(session.user.id);
+            }
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Application';
+        });
+
+        checkAuthAndStatus();
+    </script>
+</body>
+</html>

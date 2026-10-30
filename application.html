@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buya-Ntashi Farm</title>
+     <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body class="application-page">
+    <header>
+        <a href="index.html" class="logo">
+         <logo class="avatar img"><img src="../Images/Green growth logo with flowing leaves.png"></logo>
+    <span class="logo-text">
+        Buya<span class="highlight">-Ntashi</span>
+        <small data-i18n="slogan">Rooted in Agriculture</small>
+    </span>
+    </a>
+    </header>
+
+    <!--Navigation Section-->
+    <nav>
+        <ul class="navbar">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="application.html">Sign Up</a></li>
+        </ul>
+    </nav>
+
+    <main class="application-main">
+        <section class="application-intro">
+            <h1>Welcome to Buya-Ntashi Farm</h1>
+            <p>Log in or create an account to get started.</p>
+            <p>Staff member? <a href="staff/staff-login.html">Open the Staff Portal</a></p>
+        </section>
+
+        <div class="application-forms">
+            <section class="application-card form-toggle">
+                <h2>Log In</h2>
+                <form id="loginForm" method="post">
+                    <input type="email" id="loginEmail"
+                           placeholder="Email address" aria-label="Email address" required>
+                    <input type="password" id="loginPassword"
+                           placeholder="Password" aria-label="Password" required>
+                    <button type="submit">Log In</button>
+                </form>
+                <p class="application-switch">
+                    Don't have an account?
+                    <button type="button" id="showSignup" aria-controls="signupBox" aria-expanded="false">Create one</button>
+                </p>
+            </section>
+
+            <section class="application-card form-box hidden" id="signupBox" aria-hidden="true">
+                <h2>Create Account</h2>
+                <form id="signupForm" method="post">
+                    <input type="text" id="signupName"
+                           placeholder="Full name" aria-label="Full name" required>
+                    <input type="email" id="signupEmail"
+                           placeholder="Email address" aria-label="Email address" required>
+                    <input type="password" id="signupPassword"
+                           placeholder="Create password" aria-label="Create password"
+                           minlength="8" required>
+                    <button type="submit">Sign Up</button>
+                </form>
+                <p class="application-switch">
+                    Already have an account?
+                    <button type="button" id="showLogin" aria-controls="signupBox">Log in</button>
+                </p>
+            </section>
+        </div>
+        <p id="message" class="application-message" role="status" aria-live="polite"></p>
+    </main>
+    <footer class="home-footer">
+    <section class="footer-container">
+        <section class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="potato.html">Potato Farming</a></li>
+                <li><a href="fish.html">Fish Farming</a></li>
+                <li><a href="contact.html">Contact Us</a></li>
+            </ul>
+        </section>
+
+        <section class="footer-section">
+            <h3>Follow Us</h3>
+        
+            <ul class="social-links">
+                <li><a href="https://www.facebook.com/profile.php?id=61595685276150" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V13h2.8v8h3.4z"/></svg><span>Facebook</span></a></li>
+                <li><a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 7.7A2 2 0 1 0 5.2 3.6a2 2 0 0 0 0 4.1zM3.5 9.2h3.4V21H3.5zM9 9.2h3.2v1.6h.1a3.5 3.5 0 0 1 3.2-1.8c3.4 0 4 2.2 4 5.1V21h-3.4v-6.1c0-1.5 0-3.4-2.1-3.4s-2.4 1.6-2.4 3.3V21H9z"/></svg><span>LinkedIn</span></a></li>
+                <li><a href="#" aria-label="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.6 3.6 12 3.6 12 3.6s-7.6 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.8.5 9.4.5 9.4.5s7.6 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6z"/></svg><span>YouTube</span></a></li>
+            </ul>
+        </section>
+        <section class="footer-section">
+            <ul>
+            <li><h3>Contact Us</h3></li>
+            <li><p>Location: Zambia</p></li>
+            <li><p>Tel: <a href="tel:+260955708542">+260 955 708 542</a></p></li>
+            <li><p>Email: <a href="mailto:info@buyantashi.com">info@buyantashi.com</a></p></li>
+            </ul>
+        </section>
+    </section>
+    <span class="footer-copyright" data-i18n="copyright">&copy; 2026 Buya-Ntashi Farms. All rights reserved.</span>
+</footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="../supabase.js/supabase.js" defer></script>
+    <script src="../js/application.js" defer></script>
+   
+</body>
+</html>

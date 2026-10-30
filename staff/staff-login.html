@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buya-Ntanshi Farm - Staff Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body class="application-page" style="font-family: 'Montserrat', sans-serif;">
+    <header>
+        <a href="../index.html" class="logo">
+         <logo class="avatar img"><img src="../../Images/Green growth logo with flowing leaves.png" alt="Buya-Ntanshi Logo"></logo>
+        <span class="logo-text">
+            Buya<span class="highlight">-Ntashi</span>
+            <small data-i18n="slogan">Rooted in Agriculture</small>
+        </span>
+        </a>
+    </header>
+
+    <nav>
+        <ul class="navbar">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../application.html">Sign Up</a></li>
+        </ul>
+    </nav>
+
+    <main class="application-main">
+        <section class="application-intro">
+            <h1>Staff Portal Access</h1>
+            <p>Authorized personnel only. Please log in or apply for a staff role.</p>
+            <p style="color: #d6a51d; font-size: 14px; margin-top: 10px;">
+                <strong>Note:</strong> If you don't have an account yet, please 
+                <a href="application.html" style="color: #1b5e20;">create one here</a> first.
+            </p>
+        </section>
+
+        <div class="application-forms">
+            <section class="application-card">
+                <h2>Staff Login / Application</h2>
+                <form id="staffLoginForm">
+                    <label for="staffEmail">Email Address</label>
+                    <input type="email" id="staffEmail" placeholder="your@email.com" required>
+                    
+                    <label for="staffPassword">Password</label>
+                    <input type="password" id="staffPassword" placeholder="Your password" required>
+                    
+                    <!-- Hidden by default, only shows for non-Super Admins -->
+                    <div id="roleSelectionDiv" style="display: none; margin-top: 15px;">
+                        <label for="staffRole" style="color: #d6a51d; font-weight: 600;">Applying for Role:</label>
+                        <select id="staffRole" style="width: 100%; padding: 12px 13px; border: 1px solid #cbd5c9; border-radius: 6px; background: #fcfdfb; font-family: inherit; box-sizing: border-box;">
+                            <option value="" disabled selected>Select a role...</option>
+                            <option value="manager">Manager</option>
+                            <option value="bookkeeper">Bookkeeper</option>
+                            <option value="stock_controller">Stock Controller</option>
+                            <option value="delivery_personnel">Delivery Personnel</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="staffSubmitBtn" style="margin-top: 20px;">Log In</button>
+                </form>
+                <p id="staffMessage" class="application-message" role="status" aria-live="polite"></p>
+                
+                <div style="text-align: center; margin-top: 20px; border-top: 1px solid #e5eadf; padding-top: 15px;">
+                    <a href="../index.html" style="color: #1b5e20; text-decoration: none; font-weight: 600; font-size: 14px;">← Back to Main Site</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="application-footer">
+        <p>&copy; 2026 Buya-Ntashi Farm</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://obplfiabtjibycpwebqf.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9icGxmaWFidGppYnljcHdlYnFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2ODk1NTksImV4cCI6MjEwODI2NTU1OX0.prUYnRinjTOBif54LxHjyvhv7bsIaBeiqcSTk1uXmKo'; 
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // --- SUPER ADMIN LIST: Your team members' emails (5 overseers) ---
+        const SUPER_ADMINS = [
+            'howardobwalyao@gmail.com',
+            'chinyembajnreffort@gmail.com',
+            'chewetublessings@gmail.com',
+            'chandapretus@gmail.com',
+            'ethavo01@gmail.com'
+        ];
+
+        const form = document.getElementById('staffLoginForm');
+        const msgEl = document.getElementById('staffMessage');
+        const submitBtn = document.getElementById('staffSubmitBtn');
+        const roleDiv = document.getElementById('roleSelectionDiv');
+        const roleSelect = document.getElementById('staffRole');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            msgEl.textContent = '';
+            msgEl.style.color = '#124519'; 
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+
+            const email = document.getElementById('staffEmail').value.trim().toLowerCase();
+            const password = document.getElementById('staffPassword').value;
+
+            try {
+                // 1. Authenticate
+                const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({ 
+                    email: email, 
+                    password: password 
+                });
+
+                if (authError) {
+                    if (authError.message.includes('fetch')) {
+                        msgEl.textContent = 'Network error. Please check your internet connection.';
+                    } else if (authError.message.includes('Invalid login')) {
+                        msgEl.textContent = 'Invalid email or password. Please create an account first if you don\'t have one.';
+                    } else {
+                        msgEl.textContent = 'Login failed: ' + authError.message;
+                    }
+                    msgEl.style.color = '#c62828';
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Log In';
+                    return;
+                }
+
+                const userId = authData.user.id;
+
+                // 2. Check if user is a Super Admin
+                if (SUPER_ADMINS.includes(email)) {
+                    // Check if they already have an active super_admin role
+                    const { data: existingRole, error: roleError } = await supabaseClient
+                        .from('user_roles')
+                        .select('*')
+                        .eq('user_id', userId)
+                        .eq('role', 'super_admin')
+                        .eq('status', 'active')
+                        .single();
+
+                    if (roleError && roleError.code !== 'PGRST116') { // PGRST116 = not found
+                        console.error('Error checking role:', roleError);
+                    }
+
+                    if (existingRole) {
+                        // Already a super admin, redirect to dashboard
+                        msgEl.textContent = '✅ Welcome back, Overseer! Redirecting to dashboard...';
+                        setTimeout(() => window.location.href = 'staff-dashboard.html', 1500);
+                    } else {
+                        // This should not happen if SQL script ran successfully
+                        msgEl.textContent = '⚠️ Your account is not configured as super_admin. Please run the SQL script in Supabase or contact the system administrator.';
+                        msgEl.style.color = '#c62828';
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Log In';
+                    }
+                } else {
+                    // 3. NOT a Super Admin: Check if they have any role
+                    const { data: existingRole } = await supabaseClient
+                        .from('user_roles')
+                        .select('*')
+                        .eq('user_id', userId);
+
+                    if (existingRole && existingRole.length > 0) {
+                        const status = existingRole[0].status;
+                        if (status === 'active') {
+                            msgEl.textContent = '✅ You are already an active staff member. Redirecting...';
+                            setTimeout(() => window.location.href = 'staff-dashboard.html', 1500);
+                        } else {
+                            msgEl.textContent = `⏳ Your application for '${existingRole[0].requested_role}' is pending manager approval.`;
+                            msgEl.style.color = '#124519';
+                        }
+                    } else {
+                        // No role exists, need to apply
+                        msgEl.textContent = '⚠️ No staff application found. Please select a role below to apply.';
+                        msgEl.style.color = '#d6a51d';
+                        roleDiv.style.display = 'block';
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Submit Application';
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.error('Unexpected error:', error);
+                msgEl.textContent = 'An unexpected error occurred: ' + error.message;
+                msgEl.style.color = '#c62828';
+            } finally {
+                if (!msgEl.textContent.includes('Redirecting')) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Log In';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
